@@ -1,6 +1,9 @@
 import { lazy, Suspense, useState, useEffect } from 'react';
 import { Outlet, Navigate, useRoutes } from 'react-router-dom';
 
+import { AuthGuard } from 'src/auth/guard';
+import { useAuthContext } from 'src/auth/hooks';
+
 import { SimpleLayout } from 'src/layouts/simple';
 import { AuthCenteredLayout } from 'src/layouts/auth-centered';
 
@@ -13,20 +16,12 @@ const RoleSelectionPage = lazy(() => import('src/pages/auth/role-selection'));
 const SignInPage = lazy(() => import('src/pages/auth/sign-in'));
 
 export function Router() {
-  const [showSplash, setShowSplash] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-    }, 3000); // 3 seconds splash
-
-    return () => clearTimeout(timer);
-  }, []);
+  const { loading } = useAuthContext();
 
   const routes = useRoutes([
     {
       path: '/',
-      element: showSplash ? (
+      element: loading ? (
         <SplashScreen />
       ) : (
         <Navigate to="/auth/role-selection" replace />
@@ -62,11 +57,13 @@ export function Router() {
     {
       path: 'home',
       element: (
-        <Suspense fallback={<SplashScreen />}>
-          <SimpleLayout>
-            <HomePage />
-          </SimpleLayout>
-        </Suspense>
+        <AuthGuard>
+          <Suspense fallback={<SplashScreen />}>
+            <SimpleLayout>
+              <HomePage />
+            </SimpleLayout>
+          </Suspense>
+        </AuthGuard>
       ),
     },
 

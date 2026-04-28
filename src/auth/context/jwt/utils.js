@@ -1,3 +1,5 @@
+import { toast } from 'sonner';
+
 import { paths } from 'src/routes/paths';
 
 import axios from 'src/utils/axios';
@@ -58,7 +60,7 @@ export function tokenExpired(exp) {
 
   setTimeout(() => {
     try {
-      alert('Token expired!');
+      toast.error('Token expired!', { id: 'token-expired' });
       sessionStorage.removeItem(STORAGE_KEY);
       window.location.href = paths.auth.jwt.signIn;
     } catch (error) {

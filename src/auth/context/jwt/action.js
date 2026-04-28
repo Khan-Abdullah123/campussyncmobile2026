@@ -1,20 +1,17 @@
 import axios, { endpoints } from 'src/utils/axios';
 
-import { setSession } from './utils';
-
+import { STORAGE_KEY } from './constant';
+import { setSession, jwtDecode } from './utils';
 
 /** **************************************
  * Sign in
  *************************************** */
 export const signInWithPassword = async ({ email, phoneNumber, password, role }) => {
   try {
-    const identifier = email || phoneNumber;
-
     const params = {
-      email: identifier,
+      email: email || undefined,
       password,
       role,
-      // Some backends specifically look for phone
       ...(phoneNumber && { phone: phoneNumber }),
     };
 
@@ -32,8 +29,6 @@ export const signInWithPassword = async ({ email, phoneNumber, password, role })
 
     setSession(accessToken);
 
-    sessionStorage.setItem('user_role', role);
-
     return { user: teacher || parent || userResponse, accessToken };
   } catch (error) {
     console.error('Error during sign in:', error);
@@ -46,16 +41,20 @@ export const signInWithPassword = async ({ email, phoneNumber, password, role })
  *************************************** */
 export const signOut = async () => {
   try {
-    const role = sessionStorage.getItem('user_role');
+    const accessToken = sessionStorage.getItem(STORAGE_KEY);
+    const decodedToken = jwtDecode(accessToken);
+    const role = decodedToken?.role;
+
     const endpoint = role === 'teacher' ? endpoints.auth.teacher.logout : endpoints.auth.parent.logout;
     
-    await axios.post(endpoint);
+    if (endpoint) {
+      await axios.post(endpoint);
+    }
+    
     await setSession(null);
-    sessionStorage.removeItem('user_role');
   } catch (error) {
     console.error('Error during sign out:', error);
     await setSession(null);
-    sessionStorage.removeItem('user_role');
     throw error;
   }
 };

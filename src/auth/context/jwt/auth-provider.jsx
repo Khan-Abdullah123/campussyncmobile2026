@@ -6,7 +6,7 @@ import axios, { endpoints } from 'src/utils/axios';
 
 import { STORAGE_KEY } from './constant';
 import { AuthContext } from '../auth-context';
-import { setSession, isValidToken } from './utils';
+import { setSession, jwtDecode, isValidToken } from './utils';
 
 // ----------------------------------------------------------------------
 
@@ -19,10 +19,12 @@ export function AuthProvider({ children }) {
   const checkUserSession = useCallback(async () => {
     try {
       const accessToken = sessionStorage.getItem(STORAGE_KEY);
-      const role = sessionStorage.getItem('user_role');
 
       if (accessToken && isValidToken(accessToken)) {
         setSession(accessToken);
+
+        const decoded = jwtDecode(accessToken);
+        const role = decoded?.role;
 
         const endpoint = role === 'teacher' ? endpoints.auth.teacher.me : endpoints.auth.parent.me;
         const res = await axios.get(endpoint);
