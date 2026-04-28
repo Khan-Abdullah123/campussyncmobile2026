@@ -6,7 +6,7 @@ import axios, { endpoints } from 'src/utils/axios';
 
 import { STORAGE_KEY } from './constant';
 import { AuthContext } from '../auth-context';
-import { setSession, jwtDecode, isValidToken } from './utils';
+import { isValidToken, jwtDecode, setSession } from './utils';
 
 // ----------------------------------------------------------------------
 

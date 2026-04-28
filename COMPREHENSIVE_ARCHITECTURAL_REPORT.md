@@ -56,3 +56,34 @@ To generate the Android APK:
 1. Ensure the Android environment is set up (SDK/NDK).
 2. Run: `npx tauri build --target android`
 3. The APK will be generated in `src-tauri/gen/android/app/build/outputs/apk/release/`.
+
+---
+
+## 5. Post-Refactor Critique: The Path to Shipping
+
+While the core security and infrastructure issues have been resolved, the application still carries significant "Template Debt" that will affect performance and user experience on mobile devices.
+
+### 🛑 Remaining Critical Issues
+
+1. **Dependency Purge Phase 2**:
+   - `package.json` still contains massive libraries like **FullCalendar** (7 packages), **Tiptap Editor** (10 packages), and **Mapbox GL**.
+   - These add several megabytes to the final build and are currently not imported by any active screen.
+   - **Recommendation**: Uninstall all `@fullcalendar/*`, `@tiptap/*`, `mapbox-gl`, and `apexcharts` until they are actually needed for a feature.
+
+2. **UI Component Bloat**:
+   - The `src/components/` directory contains 37 subdirectories. Folders like `mega-menu`, `organizational-chart`, and `editor` are inherited from the desktop dashboard template.
+   - **Recommendation**: Delete unused component folders to speed up build times and reduce IDE indexing lag.
+
+3. **Missing Native Mobile UX**:
+   - **Back Button**: There is no logic to handle the Android physical back button (it will currently just exit the app or go back to the role selection in a way that might feel broken).
+   - **Safe Areas**: The UI does not explicitly handle "Notch" or "Hole-punch" displays (Safe Area Insets) which can cut off header content on modern Android devices.
+   - **Recommendation**: Integrate Tauri's window/mobile plugins to handle physical button events and safe-area padding.
+
+4. **Persistence & Offline Strategy**:
+   - The app is currently 100% online-dependent. If a parent is at a school with poor reception, the app will fail to show any data.
+   - **Recommendation**: Implement a caching layer (e.g., using `indexDB` via `localforage` or Tauri's own storage plugin) to allow viewing last-synced data offline.
+
+### 📈 Future Roadmap
+- [ ] **Native Splash Screen**: Replace the current web-based splash with a native Android splash screen to hide the "Webview Flash".
+- [ ] **Role Persistence**: Save the selected role in local storage so the user doesn't have to pick "Teacher" or "Parent" every single time they open the app.
+- [ ] **Icon Optimization**: Switch from `Iconify` (on-demand download) to a local SVG icon set for better performance and offline reliability.

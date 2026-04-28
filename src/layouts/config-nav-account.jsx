@@ -1,5 +1,3 @@
-import SvgIcon from '@mui/material/SvgIcon';
-
 import { paths } from 'src/routes/paths';
 
 import { Iconify } from 'src/components/iconify';

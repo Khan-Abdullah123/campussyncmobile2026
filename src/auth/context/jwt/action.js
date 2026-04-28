@@ -1,7 +1,7 @@
 import axios, { endpoints } from 'src/utils/axios';
 
 import { STORAGE_KEY } from './constant';
-import { setSession, jwtDecode } from './utils';
+import { jwtDecode, setSession } from './utils';
 
 /** **************************************
  * Sign in
@@ -46,11 +46,11 @@ export const signOut = async () => {
     const role = decodedToken?.role;
 
     const endpoint = role === 'teacher' ? endpoints.auth.teacher.logout : endpoints.auth.parent.logout;
-    
+
     if (endpoint) {
       await axios.post(endpoint);
     }
-    
+
     await setSession(null);
   } catch (error) {
     console.error('Error during sign out:', error);
