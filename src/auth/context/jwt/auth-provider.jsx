@@ -6,7 +6,7 @@ import axios, { endpoints } from 'src/utils/axios';
 
 import { STORAGE_KEY } from './constant';
 import { AuthContext } from '../auth-context';
-import { isValidToken, jwtDecode, setSession } from './utils';
+import { jwtDecode, setSession, isValidToken } from './utils';
 
 // ----------------------------------------------------------------------
 
@@ -18,7 +18,7 @@ export function AuthProvider({ children }) {
 
   const checkUserSession = useCallback(async () => {
     try {
-      const accessToken = sessionStorage.getItem(STORAGE_KEY);
+      const accessToken = localStorage.getItem(STORAGE_KEY);
 
       if (accessToken && isValidToken(accessToken)) {
         setSession(accessToken);
@@ -34,6 +34,7 @@ export function AuthProvider({ children }) {
 
         setState({ user: { ...user, accessToken, role }, loading: false });
       } else {
+        localStorage.removeItem(STORAGE_KEY);
         setState({ user: null, loading: false });
       }
     } catch (error) {

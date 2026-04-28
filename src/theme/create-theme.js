@@ -33,7 +33,7 @@ export function createTheme(localeComponents, settings) {
    */
   const theme = extendTheme(
     updateTheme,
-    localeComponents,
+    localeComponents ?? {},
     updateComponentsWithSettings(settings),
     overridesTheme
   );

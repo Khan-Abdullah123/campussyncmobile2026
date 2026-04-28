@@ -3,8 +3,6 @@ import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/s
 
 import { useTranslate } from 'src/locales';
 
-import { useSettingsContext } from 'src/components/settings';
-
 import { createTheme } from './create-theme';
 import { RTL } from './with-settings/right-to-left';
 import { schemeConfig } from './color-scheme-script';
@@ -14,7 +12,16 @@ import { schemeConfig } from './color-scheme-script';
 export function ThemeProvider({ children }) {
   const { currentLang } = useTranslate();
 
-  const settings = useSettingsContext();
+  const settings = {
+    direction: 'ltr',
+    colorScheme: 'light',
+    fontFamily: 'Public Sans',
+    primaryColor: 'default',
+    contrast: 'default',
+    layout: 'vertical',
+    navColor: 'integral',
+    navLayout: 'vertical',
+  };
 
   const theme = createTheme(currentLang?.systemValue, settings);
 

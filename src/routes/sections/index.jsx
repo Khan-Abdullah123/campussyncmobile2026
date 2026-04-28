@@ -4,10 +4,11 @@ import { Outlet, Navigate, useRoutes } from 'react-router-dom';
 import { SimpleLayout } from 'src/layouts/simple';
 import { AuthCenteredLayout } from 'src/layouts/auth-centered';
 
+import { SplashScreen } from 'src/components/loading-screen';
+
 import { AuthGuard } from 'src/auth/guard';
 import { useAuthContext } from 'src/auth/hooks';
 
-import { SplashScreen } from 'src/components/loading-screen';
 
 // ----------------------------------------------------------------------
 

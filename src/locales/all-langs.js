@@ -12,14 +12,6 @@ import {
   viVN as viVNDate,
   zhCN as zhCNDate,
 } from '@mui/x-date-pickers/locales';
-// data grid (MUI)
-import {
-  enUS as enUSDataGrid,
-  frFR as frFRDataGrid,
-  viVN as viVNDataGrid,
-  zhCN as zhCNDataGrid,
-  arSD as arSDDataGrid,
-} from '@mui/x-data-grid/locales';
 
 // ----------------------------------------------------------------------
 
@@ -31,7 +23,7 @@ export const allLangs = [
     adapterLocale: 'en',
     numberFormat: { code: 'en-US', currency: 'USD' },
     systemValue: {
-      components: { ...enUSDate.components, ...enUSDataGrid.components },
+      components: { ...enUSDate.components },
     },
   },
   {
@@ -41,7 +33,7 @@ export const allLangs = [
     adapterLocale: 'fr',
     numberFormat: { code: 'fr-Fr', currency: 'EUR' },
     systemValue: {
-      components: { ...frFRCore.components, ...frFRDate.components, ...frFRDataGrid.components },
+      components: { ...frFRCore.components, ...frFRDate.components },
     },
   },
   {
@@ -51,7 +43,7 @@ export const allLangs = [
     adapterLocale: 'vi',
     numberFormat: { code: 'vi-VN', currency: 'VND' },
     systemValue: {
-      components: { ...viVNCore.components, ...viVNDate.components, ...viVNDataGrid.components },
+      components: { ...viVNCore.components, ...viVNDate.components },
     },
   },
   {
@@ -61,7 +53,7 @@ export const allLangs = [
     adapterLocale: 'zh-cn',
     numberFormat: { code: 'zh-CN', currency: 'CNY' },
     systemValue: {
-      components: { ...zhCNCore.components, ...zhCNDate.components, ...zhCNDataGrid.components },
+      components: { ...zhCNCore.components, ...zhCNDate.components },
     },
   },
   {
@@ -71,7 +63,7 @@ export const allLangs = [
     adapterLocale: 'ar-sa',
     numberFormat: { code: 'ar', currency: 'AED' },
     systemValue: {
-      components: { ...arSACore.components, ...arSDDataGrid.components },
+      components: { ...arSACore.components },
     },
   },
 ];

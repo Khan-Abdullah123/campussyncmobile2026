@@ -21,18 +21,6 @@ export function SimpleLayout({ sx, children, content }) {
       headerSection={
         <HeaderBase
           layoutQuery={layoutQuery}
-          onOpenNav={mobileNavOpen.onTrue}
-          slotsDisplay={{
-            signIn: false,
-            account: true,
-            purchase: false,
-            contacts: false,
-            searchbar: false,
-            workspaces: false,
-            menuButton: false,
-            localization: false,
-            notifications: false,
-          }}
           slots={{
             topArea: (
               <Alert severity="info" sx={{ display: 'none', borderRadius: 0 }}>

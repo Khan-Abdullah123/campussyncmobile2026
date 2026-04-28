@@ -106,7 +106,13 @@ export function LoginView({ role }) {
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           New user?
         </Typography>
-        <Link variant="subtitle2">Create an account</Link>
+        <Link
+          variant="subtitle2"
+          onClick={() => toast.info('Registration is coming soon!')}
+          sx={{ cursor: 'pointer' }}
+        >
+          Create an account
+        </Link>
       </Stack>
     </Stack>
   );
@@ -171,7 +177,13 @@ export function LoginView({ role }) {
           />
 
           {method === 'email' && (
-            <Link variant="body2" color="inherit" underline="always" sx={{ alignSelf: 'flex-end' }}>
+            <Link
+              variant="body2"
+              color="inherit"
+              underline="always"
+              sx={{ alignSelf: 'flex-end', cursor: 'pointer' }}
+              onClick={() => toast.info('Forgot password feature coming soon!')}
+            >
               Forgot password?
             </Link>
           )}

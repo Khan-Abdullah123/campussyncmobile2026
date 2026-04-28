@@ -12,7 +12,9 @@
   "app": {
     "windows": [
       {
-        "title": "CampusSync",
+        "title": "CampusSync Mobile",
+        "width": 375,
+        "height": 812,
         "resizable": true,
         "fullscreen": false
       }

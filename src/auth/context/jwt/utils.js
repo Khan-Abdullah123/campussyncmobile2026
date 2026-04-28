@@ -61,7 +61,7 @@ export function tokenExpired(exp) {
   setTimeout(() => {
     try {
       toast.error('Token expired!', { id: 'token-expired' });
-      sessionStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(STORAGE_KEY);
       window.location.href = paths.auth.jwt.signIn;
     } catch (error) {
       console.error('Error during token expiration:', error);
@@ -75,7 +75,7 @@ export function tokenExpired(exp) {
 export async function setSession(accessToken) {
   try {
     if (accessToken) {
-      sessionStorage.setItem(STORAGE_KEY, accessToken);
+      localStorage.setItem(STORAGE_KEY, accessToken);
 
       axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 
@@ -85,7 +85,7 @@ export async function setSession(accessToken) {
         tokenExpired(decodedToken.exp);
       }
     } else {
-      sessionStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(STORAGE_KEY);
       delete axios.defaults.headers.common.Authorization;
     }
   } catch (error) {

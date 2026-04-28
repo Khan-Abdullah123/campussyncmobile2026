@@ -41,7 +41,7 @@ export const signInWithPassword = async ({ email, phoneNumber, password, role })
  *************************************** */
 export const signOut = async () => {
   try {
-    const accessToken = sessionStorage.getItem(STORAGE_KEY);
+    const accessToken = localStorage.getItem(STORAGE_KEY);
     const decodedToken = jwtDecode(accessToken);
     const role = decodedToken?.role;
 
