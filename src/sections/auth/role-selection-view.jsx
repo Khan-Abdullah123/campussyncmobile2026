@@ -8,7 +8,7 @@ import CardActionArea from '@mui/material/CardActionArea';
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 
-import { varAlpha } from 'src/theme/styles';
+import { varAlpha } from 'src/theme';
 import { AvatarShape } from 'src/assets/illustrations';
 
 import { Image } from 'src/components/image';
@@ -115,7 +115,7 @@ function RoleCard({ name, subTitle, avatarUrl, coverUrl, onClick }) {
             ratio="16/9"
             slotProps={{
               overlay: {
-                background: (theme) => varAlpha(theme.vars.palette.grey['900Channel'], 0.48),
+                background: (theme) => varAlpha(theme.palette.grey[900], 0.48),
               },
             }}
           />

@@ -5,20 +5,11 @@
   "identifier": "com.campussync.mobile",
   "build": {
     "frontendDist": "../dist",
-    "devUrl": "http://localhost:3033",
+    "devUrl": "http://0.0.0.0:3033",
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build"
   },
   "app": {
-    "windows": [
-      {
-        "title": "CampusSync Mobile",
-        "width": 375,
-        "height": 812,
-        "resizable": true,
-        "fullscreen": false
-      }
-    ],
     "security": {
       "csp": null
     }

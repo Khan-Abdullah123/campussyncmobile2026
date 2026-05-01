@@ -1,3 +1,4 @@
+rootProject.name = 'campussync_android'
 include ':app'
 
 apply from: 'tauri.settings.gradle'

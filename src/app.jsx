@@ -7,9 +7,9 @@ import { useRouter, usePathname } from 'src/routes/hooks';
 
 import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
 
+import { ThemeProvider } from 'src/theme';
 import { LocalizationProvider } from 'src/locales';
 import { I18nProvider } from 'src/locales/i18n-provider';
-import { ThemeProvider } from 'src/theme/theme-provider';
 
 import { Snackbar } from 'src/components/snackbar';
 import { ProgressBar } from 'src/components/progress-bar';
@@ -29,18 +29,29 @@ export default function App() {
   useEffect(() => {
     // Handle Android Back Button via Tauri
     const handleBackButton = async () => {
-      if (pathname === '/' || pathname === '/auth/role-selection' || pathname === '/home') {
-        // Exit app or show toast
-      } else {
-        router.back();
-      }
+      const { getCurrentWindow } = await import('@tauri-apps/api/window');
+      const appWindow = getCurrentWindow();
+
+      // Standard web back button handling that Tauri maps to physical button
+      const onKeyDown = (e) => {
+        if (e.key === 'BrowserBack' || e.key === 'Escape') {
+          if (pathname === '/' || pathname === '/auth/role-selection' || pathname === '/home') {
+            // On root pages, maybe show a toast "Press again to exit" or similar
+            // For now, we'll let it be
+          } else {
+            router.back();
+          }
+        }
+      };
+
+      window.addEventListener('keydown', onKeyDown);
+
+      return () => {
+        window.removeEventListener('keydown', onKeyDown);
+      };
     };
 
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'BrowserBack' || e.key === 'Escape') {
-        handleBackButton();
-      }
-    });
+    handleBackButton();
   }, [pathname, router]);
 
   return (

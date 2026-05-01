@@ -6,7 +6,7 @@ import { styled, useTheme } from '@mui/material/styles';
 
 import { useScrollOffSetTop } from 'src/hooks/use-scroll-offset-top';
 
-import { bgBlur, varAlpha } from 'src/theme/styles';
+import { bgBlur, varAlpha } from 'src/theme';
 
 import { layoutClasses } from '../classes';
 
@@ -23,7 +23,7 @@ const StyledElevation = styled('span')(({ theme }) => ({
   borderRadius: '50%',
   position: 'absolute',
   width: `calc(100% - 48px)`,
-  boxShadow: theme.customShadows.z8,
+  boxShadow: theme.customShadows?.z8,
 }));
 
 // ----------------------------------------------------------------------
@@ -58,7 +58,7 @@ export function HeaderSection({
     },
     offset: {
       ...bgBlur({
-        color: varAlpha(theme.vars.palette.background.defaultChannel, 0.8),
+        color: varAlpha(theme.palette.background.default, 0.8),
       }),
     },
   };

@@ -4,8 +4,6 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
 import Link from '@mui/material/Link';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
@@ -37,30 +35,20 @@ export const LoginSchema = zod.object({
     .min(6, { message: 'Password must be at least 6 characters!' }),
 });
 
-export const PhoneLoginSchema = zod.object({
-  phoneNumber: zod.string().min(10, { message: 'Phone number must be at least 10 digits!' }),
-  password: zod
-    .string()
-    .min(1, { message: 'Password is required!' })
-    .min(6, { message: 'Password must be at least 6 characters!' }),
-});
-
 // ----------------------------------------------------------------------
 
 export function LoginView({ role }) {
   const router = useRouter();
   const password = useBoolean();
   const [errorMsg, setErrorMsg] = useState('');
-  const [method, setMethod] = useState('email');
 
   const defaultValues = {
     email: '',
-    phoneNumber: '',
     password: '',
   };
 
   const methods = useForm({
-    resolver: zodResolver(method === 'email' ? LoginSchema : PhoneLoginSchema),
+    resolver: zodResolver(LoginSchema),
     defaultValues,
   });
 
@@ -74,8 +62,7 @@ export function LoginView({ role }) {
   const onSubmit = handleSubmit(async (data) => {
     try {
       await signInWithPassword({
-        email: method === 'email' ? data.email : undefined,
-        phoneNumber: method === 'phone' ? data.phoneNumber : undefined,
+        email: data.email,
         password: data.password,
         role,
       });
@@ -84,17 +71,29 @@ export function LoginView({ role }) {
 
       toast.success('Login success!');
 
+      // Native Notification
+      try {
+        const { isPermissionGranted, requestPermission, sendNotification } = await import(
+          '@tauri-apps/plugin-notification'
+        );
+        let permissionGranted = await isPermissionGranted();
+        if (!permissionGranted) {
+          const permission = await requestPermission();
+          permissionGranted = permission === 'granted';
+        }
+        if (permissionGranted) {
+          sendNotification({ title: 'Welcome!', body: `Logged in as ${role}` });
+        }
+      } catch (err) {
+        console.error('Notification error:', err);
+      }
+
       router.push(paths.home);
     } catch (error) {
       console.error(error);
       setErrorMsg(typeof error === 'string' ? error : error.message);
     }
   });
-
-  const handleChangeMethod = (event, newValue) => {
-    setMethod(newValue);
-    setErrorMsg('');
-  };
 
   const renderLogo = <AnimateLogo2 sx={{ mb: 3, mx: 'auto' }} />;
 
@@ -123,20 +122,6 @@ export function LoginView({ role }) {
 
       {renderHead}
 
-      <Tabs
-        value={method}
-        onChange={handleChangeMethod}
-        sx={{
-          mb: 3,
-          [`& .MuiTabs-flexContainer`]: {
-            justifyContent: 'center',
-          },
-        }}
-      >
-        <Tab label="Email / Username" value="email" />
-        <Tab label="Phone Number" value="phone" />
-      </Tabs>
-
       {!!errorMsg && (
         <Alert severity="error" sx={{ mb: 3 }}>
           {errorMsg}
@@ -145,20 +130,7 @@ export function LoginView({ role }) {
 
       <Form methods={methods} onSubmit={onSubmit}>
         <Stack spacing={3}>
-          {method === 'email' ? (
-            <Field.Text
-              name="email"
-              label="Email or Username"
-              InputLabelProps={{ shrink: true }}
-            />
-          ) : (
-            <Field.Text
-              name="phoneNumber"
-              label="Phone Number"
-              placeholder="e.g. 9876543210"
-              InputLabelProps={{ shrink: true }}
-            />
-          )}
+          <Field.Text name="email" label="Email or Username" InputLabelProps={{ shrink: true }} />
 
           <Field.Text
             name="password"
@@ -176,17 +148,15 @@ export function LoginView({ role }) {
             }}
           />
 
-          {method === 'email' && (
-            <Link
-              variant="body2"
-              color="inherit"
-              underline="always"
-              sx={{ alignSelf: 'flex-end', cursor: 'pointer' }}
-              onClick={() => toast.info('Forgot password feature coming soon!')}
-            >
-              Forgot password?
-            </Link>
-          )}
+          <Link
+            variant="body2"
+            color="inherit"
+            underline="always"
+            sx={{ alignSelf: 'flex-end', cursor: 'pointer' }}
+            onClick={() => toast.info('Forgot password feature coming soon!')}
+          >
+            Forgot password?
+          </Link>
 
           <LoadingButton
             fullWidth

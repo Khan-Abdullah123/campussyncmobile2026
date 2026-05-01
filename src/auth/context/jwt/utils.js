@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { paths } from 'src/routes/paths';
 
 import axios from 'src/utils/axios';
+import { storage } from 'src/utils/storage';
 
 import { STORAGE_KEY } from './constant';
 
@@ -54,20 +55,10 @@ export function isValidToken(accessToken) {
 
 // ----------------------------------------------------------------------
 
-export function tokenExpired(exp) {
-  const currentTime = Date.now();
-  const timeLeft = exp * 1000 - currentTime;
-
-  setTimeout(() => {
-    try {
-      toast.error('Token expired!', { id: 'token-expired' });
-      localStorage.removeItem(STORAGE_KEY);
-      window.location.href = paths.auth.jwt.signIn;
-    } catch (error) {
-      console.error('Error during token expiration:', error);
-      throw error;
-    }
-  }, timeLeft);
+export async function tokenExpired(exp) {
+  toast.error('Token expired!', { id: 'token-expired' });
+  await storage.removeItem(STORAGE_KEY);
+  window.location.href = paths.auth.jwt.signIn;
 }
 
 // ----------------------------------------------------------------------
@@ -75,17 +66,11 @@ export function tokenExpired(exp) {
 export async function setSession(accessToken) {
   try {
     if (accessToken) {
-      localStorage.setItem(STORAGE_KEY, accessToken);
+      await storage.setItem(STORAGE_KEY, accessToken);
 
       axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
-
-      const decodedToken = jwtDecode(accessToken);
-
-      if (decodedToken && 'exp' in decodedToken) {
-        tokenExpired(decodedToken.exp);
-      }
     } else {
-      localStorage.removeItem(STORAGE_KEY);
+      await storage.removeItem(STORAGE_KEY);
       delete axios.defaults.headers.common.Authorization;
     }
   } catch (error) {

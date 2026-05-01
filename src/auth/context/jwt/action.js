@@ -1,3 +1,4 @@
+import { storage } from 'src/utils/storage';
 import axios, { endpoints } from 'src/utils/axios';
 
 import { STORAGE_KEY } from './constant';
@@ -6,13 +7,12 @@ import { jwtDecode, setSession } from './utils';
 /** **************************************
  * Sign in
  *************************************** */
-export const signInWithPassword = async ({ email, phoneNumber, password, role }) => {
+export const signInWithPassword = async ({ email, password, role }) => {
   try {
     const params = {
-      email: email || undefined,
+      email,
       password,
       role,
-      ...(phoneNumber && { phone: phoneNumber }),
     };
 
     const endpoint = role === 'teacher' ? endpoints.auth.teacher.login : endpoints.auth.parent.login;
@@ -27,7 +27,7 @@ export const signInWithPassword = async ({ email, phoneNumber, password, role })
       throw new Error('Access token not found in response');
     }
 
-    setSession(accessToken);
+    await setSession(accessToken);
 
     return { user: teacher || parent || userResponse, accessToken };
   } catch (error) {
@@ -41,7 +41,7 @@ export const signInWithPassword = async ({ email, phoneNumber, password, role })
  *************************************** */
 export const signOut = async () => {
   try {
-    const accessToken = localStorage.getItem(STORAGE_KEY);
+    const accessToken = await storage.getItem(STORAGE_KEY);
     const decodedToken = jwtDecode(accessToken);
     const role = decodedToken?.role;
 
