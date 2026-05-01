@@ -5,7 +5,7 @@
   "identifier": "com.campussync.mobile",
   "build": {
     "frontendDist": "../dist",
-    "devUrl": "http://0.0.0.0:3033",
+    "devUrl": "http://localhost:3033",
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build"
   },
