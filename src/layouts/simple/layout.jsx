@@ -24,7 +24,7 @@ export function SimpleLayout({ sx, children, content }) {
           onOpenNav={mobileNavOpen.onTrue}
           slotsDisplay={{
             signIn: false,
-            account: true,
+            account: false,
             purchase: false,
             contacts: false,
             searchbar: false,

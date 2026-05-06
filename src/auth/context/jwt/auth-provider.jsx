@@ -6,7 +6,7 @@ import axios, { endpoints } from 'src/utils/axios';
 
 import { STORAGE_KEY } from './constant';
 import { AuthContext } from '../auth-context';
-import { isValidToken, jwtDecode, setSession } from './utils';
+import { setSession, isValidToken } from './utils';
 
 // ----------------------------------------------------------------------
 
@@ -23,16 +23,11 @@ export function AuthProvider({ children }) {
       if (accessToken && isValidToken(accessToken)) {
         setSession(accessToken);
 
-        const decoded = jwtDecode(accessToken);
-        const role = decoded?.role;
+        const res = await axios.get(endpoints.auth.me);
 
-        const endpoint = role === 'teacher' ? endpoints.auth.teacher.me : endpoints.auth.parent.me;
-        const res = await axios.get(endpoint);
+        const { user } = res.data;
 
-        const { teacher, parent, user: userResponse } = res.data;
-        const user = teacher || parent || userResponse;
-
-        setState({ user: { ...user, accessToken, role }, loading: false });
+        setState({ user: { ...user, accessToken }, loading: false });
       } else {
         setState({ user: null, loading: false });
       }
@@ -55,7 +50,12 @@ export function AuthProvider({ children }) {
 
   const memoizedValue = useMemo(
     () => ({
-      user: state.user,
+      user: state.user
+        ? {
+            ...state.user,
+            role: state.user?.role ?? 'admin',
+          }
+        : null,
       checkUserSession,
       loading: status === 'loading',
       authenticated: status === 'authenticated',

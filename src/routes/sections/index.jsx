@@ -1,75 +1,56 @@
 import { lazy, Suspense } from 'react';
-import { Outlet, Navigate, useRoutes } from 'react-router-dom';
+import { Navigate, useRoutes } from 'react-router-dom';
 
-import { SimpleLayout } from 'src/layouts/simple';
 import { AuthCenteredLayout } from 'src/layouts/auth-centered';
-
-import { AuthGuard } from 'src/auth/guard';
-import { useAuthContext } from 'src/auth/hooks';
 
 import { SplashScreen } from 'src/components/loading-screen';
 
+import { dashboardRoutes } from './dashboard';
+
 // ----------------------------------------------------------------------
 
-const HomePage = lazy(() => import('src/pages/home'));
-const RoleSelectionPage = lazy(() => import('src/pages/auth/role-selection'));
-const SignInPage = lazy(() => import('src/pages/auth/sign-in'));
+const RoleSelectPage = lazy(() => import('src/pages/auth/role-select'));
+const RoleLoginPage = lazy(() => import('src/pages/auth/role-login'));
+const StartupSplashPage = lazy(() => import('src/pages/auth/startup-splash'));
 
 export function Router() {
-  const { loading } = useAuthContext();
-
-  const routes = useRoutes([
+  return useRoutes([
     {
       path: '/',
-      element: loading ? (
-        <SplashScreen />
-      ) : (
-        <Navigate to="/auth/role-selection" replace />
-      ),
-    },
-    {
-      path: 'auth',
       element: (
         <Suspense fallback={<SplashScreen />}>
-          <Outlet />
+          <StartupSplashPage />
         </Suspense>
       ),
-      children: [
-        {
-          path: 'role-selection',
-          element: (
-            <SimpleLayout>
-              <RoleSelectionPage />
-            </SimpleLayout>
-          ),
-          index: true,
-        },
-        {
-          path: 'sign-in/:role',
-          element: (
-            <AuthCenteredLayout>
-              <SignInPage />
-            </AuthCenteredLayout>
-          ),
-        },
-      ],
     },
     {
-      path: 'home',
+      path: '/role-selection',
       element: (
-        <AuthGuard>
-          <Suspense fallback={<SplashScreen />}>
-            <SimpleLayout>
-              <HomePage />
-            </SimpleLayout>
-          </Suspense>
-        </AuthGuard>
+        <Suspense fallback={<SplashScreen />}>
+          <AuthCenteredLayout
+            sx={{
+              '--layout-auth-content-width': '980px',
+            }}
+          >
+            <RoleSelectPage />
+          </AuthCenteredLayout>
+        </Suspense>
       ),
     },
+    {
+      path: '/login/:role',
+      element: (
+        <Suspense fallback={<SplashScreen />}>
+          <AuthCenteredLayout>
+            <RoleLoginPage />
+          </AuthCenteredLayout>
+        </Suspense>
+      ),
+    },
+    { path: '/login', element: <Navigate to="/login/teacher" replace /> },
+    ...dashboardRoutes,
 
     // No match
     { path: '*', element: <Navigate to="/" replace /> },
   ]);
-
-  return routes;
 }

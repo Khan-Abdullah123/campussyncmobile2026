@@ -2539,11 +2539,6 @@
   dependencies:
     "@swc/counter" "^0.1.3"
 
-"@tauri-apps/api@^2.0.0":
-  version "2.10.1"
-  resolved "https://registry.npmjs.org/@tauri-apps/api/-/api-2.10.1.tgz"
-  integrity sha512-hKL/jWf293UDSUN09rR69hrToyIXBb8CjGaWC7gfinvnQrBVvnLr08FeFi38gxtugAVyVcTa5/FD/Xnkb1siBw==
-
 "@tauri-apps/cli-win32-x64-msvc@2.10.1":
   version "2.10.1"
   resolved "https://registry.npmjs.org/@tauri-apps/cli-win32-x64-msvc/-/cli-win32-x64-msvc-2.10.1.tgz"
@@ -2947,10 +2942,10 @@
   dependencies:
     "@swc/core" "^1.5.7"
 
-"@xmldom/xmldom@^0.9.10":
-  version "0.9.10"
-  resolved "https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.9.10.tgz"
-  integrity sha512-A9gOqLdi6cV4ibazAjcQufGj0B1y/vDqYrcuP6d/6x8P27gRS8643Dj9o1dEKtB6O7fwxb2FgBmJS2mX7gpvdw==
+"@xmldom/xmldom@^0.8.8":
+  version "0.8.13"
+  resolved "https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.8.13.tgz"
+  integrity sha512-KRYzxepc14G/CEpEGc3Yn+JKaAeT63smlDr+vjB8jRfgTBBI9wRj/nkQEO+ucV8p8I9bfKLWp37uHgFrbntPvw==
 
 "@yr/monotone-cubic-spline@^1.0.3":
   version "1.0.3"
@@ -6261,11 +6256,11 @@ picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.3.1:
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
 plist@^3.1.0:
-  version "3.1.1"
-  resolved "https://registry.npmjs.org/plist/-/plist-3.1.1.tgz"
-  integrity sha512-ZIfcLJC+7E7FBFnDxm9MPmt7D+DidyQ26lewieO75AdhA2ayMtsJSES0iWzqJQbcVRSrTufQoy0DR94xHue0oA==
+  version "3.1.0"
+  resolved "https://registry.npmjs.org/plist/-/plist-3.1.0.tgz"
+  integrity sha512-uysumyrvkUX0rX/dEVqt8gC3sTBzd4zoWfLeS29nb53imdaXVvLINYXTI2GNqzaMuvacNx4uJQ8+b3zXR0pkgQ==
   dependencies:
-    "@xmldom/xmldom" "^0.9.10"
+    "@xmldom/xmldom" "^0.8.8"
     base64-js "^1.5.1"
     xmlbuilder "^15.1.1"
 

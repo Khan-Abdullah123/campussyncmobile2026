@@ -1,37 +1,53 @@
 import axios, { endpoints } from 'src/utils/axios';
 
+import { setSession } from './utils';
 import { STORAGE_KEY } from './constant';
-import { jwtDecode, setSession } from './utils';
 
 /** **************************************
  * Sign in
  *************************************** */
-export const signInWithPassword = async ({ email, phoneNumber, password, role }) => {
+export const signInWithPassword = async ({ email, password }) => {
   try {
-    const params = {
-      email: email || undefined,
-      password,
-      role,
-      ...(phoneNumber && { phone: phoneNumber }),
-    };
+    const params = { email, password };
 
-    const endpoint = role === 'teacher' ? endpoints.auth.teacher.login : endpoints.auth.parent.login;
+    const res = await axios.post(endpoints.auth.signIn, params);
 
-    const res = await axios.post(endpoint, params);
-
-    const { token, teacher, parent, user: userResponse } = res.data;
-
-    const accessToken = token;
+    const { accessToken } = res.data;
 
     if (!accessToken) {
       throw new Error('Access token not found in response');
     }
 
     setSession(accessToken);
-
-    return { user: teacher || parent || userResponse, accessToken };
   } catch (error) {
     console.error('Error during sign in:', error);
+    throw error;
+  }
+};
+
+/** **************************************
+ * Sign up
+ *************************************** */
+export const signUp = async ({ email, password, firstName, lastName }) => {
+  const params = {
+    email,
+    password,
+    firstName,
+    lastName,
+  };
+
+  try {
+    const res = await axios.post(endpoints.auth.signUp, params);
+
+    const { accessToken } = res.data;
+
+    if (!accessToken) {
+      throw new Error('Access token not found in response');
+    }
+
+    sessionStorage.setItem(STORAGE_KEY, accessToken);
+  } catch (error) {
+    console.error('Error during sign up:', error);
     throw error;
   }
 };
@@ -41,20 +57,9 @@ export const signInWithPassword = async ({ email, phoneNumber, password, role })
  *************************************** */
 export const signOut = async () => {
   try {
-    const accessToken = sessionStorage.getItem(STORAGE_KEY);
-    const decodedToken = jwtDecode(accessToken);
-    const role = decodedToken?.role;
-
-    const endpoint = role === 'teacher' ? endpoints.auth.teacher.logout : endpoints.auth.parent.logout;
-
-    if (endpoint) {
-      await axios.post(endpoint);
-    }
-
     await setSession(null);
   } catch (error) {
     console.error('Error during sign out:', error);
-    await setSession(null);
     throw error;
   }
 };

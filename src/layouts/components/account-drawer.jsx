@@ -145,9 +145,9 @@ export function AccountDrawer({ data = [], sx, ...other }) {
             }}
           >
             {data.map((option) => {
-              const rootLabel = 'Home';
+              const rootLabel = pathname.includes('/dashboard') ? 'Home' : 'Dashboard';
 
-              const rootHref = paths.home;
+              const rootHref = pathname.includes('/dashboard') ? '/' : paths.dashboard.root;
 
               return (
                 <MenuItem

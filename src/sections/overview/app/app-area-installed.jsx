@@ -1,0 +1,77 @@
+import { useState, useCallback } from 'react';
+
+import Card from '@mui/material/Card';
+import { useTheme } from '@mui/material/styles';
+import CardHeader from '@mui/material/CardHeader';
+
+import { fNumber, fShortenNumber } from 'src/utils/format-number';
+
+import { Chart, useChart, ChartSelect, ChartLegends } from 'src/components/chart';
+
+// ----------------------------------------------------------------------
+
+export function AppAreaInstalled({ title, subheader, chart, ...other }) {
+  const theme = useTheme();
+
+  const [selectedSeries, setSelectedSeries] = useState(chart.series[0]?.name || '');
+
+  const chartColors = chart.colors ?? [
+    theme.palette.primary.dark,
+    theme.palette.warning.main,
+    theme.palette.info.main,
+  ];
+
+  const chartOptions = useChart({
+    chart: { stacked: true },
+    colors: chartColors,
+    stroke: { width: 0 },
+    xaxis: { categories: chart.categories },
+    tooltip: { y: { formatter: (value) => fNumber(value) } },
+    plotOptions: { bar: { columnWidth: '40%' } },
+    ...chart.options,
+  });
+
+  const handleChangeSeries = useCallback((newValue) => {
+    setSelectedSeries(newValue);
+  }, []);
+
+  const currentSeries = chart.series.find((i) => i.name === selectedSeries);
+
+  return (
+    <Card {...other}>
+      <CardHeader
+        title={title}
+        subheader={subheader}
+        action={
+          chart.series.length > 1 && (
+            <ChartSelect
+              options={chart.series.map((item) => item.name)}
+              value={selectedSeries}
+              onChange={handleChangeSeries}
+            />
+          )
+        }
+        sx={{ mb: 3 }}
+      />
+
+      <ChartLegends
+        colors={chartOptions?.colors}
+        labels={currentSeries?.data.map((item) => item.name) || []}
+        values={currentSeries?.data.map((item) => fShortenNumber(item.data.reduce((a, b) => a + b, 0) / item.data.length)) || []}
+        sx={{
+          px: 3,
+          gap: 3,
+        }}
+      />
+
+      <Chart
+        key={selectedSeries}
+        type="bar"
+        series={currentSeries?.data}
+        options={chartOptions}
+        height={320}
+        sx={{ py: 2.5, pl: 1, pr: 2.5 }}
+      />
+    </Card>
+  );
+}

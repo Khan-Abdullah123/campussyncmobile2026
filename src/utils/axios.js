@@ -35,16 +35,9 @@ export const endpoints = {
   kanban: '/api/kanban',
   calendar: '/api/calendar',
   auth: {
-    teacher: {
-      me: '/teacher/me',
-      login: '/teacher/login',
-      logout: '/teacher/logout',
-    },
-    parent: {
-      me: '/parent/me',
-      login: '/parent/login',
-      logout: '/parent/logout',
-    },
+    me: '/api/auth/me',
+    signIn: '/api/auth/sign-in',
+    signUp: '/api/auth/sign-up',
   },
   mail: {
     list: '/api/mail/list',

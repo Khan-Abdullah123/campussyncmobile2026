@@ -1,5 +1,3 @@
-import { toast } from 'sonner';
-
 import { paths } from 'src/routes/paths';
 
 import axios from 'src/utils/axios';
@@ -14,7 +12,7 @@ export function jwtDecode(token) {
 
     const parts = token.split('.');
     if (parts.length < 2) {
-      return null;
+      throw new Error('Invalid token!');
     }
 
     const base64Url = parts[1];
@@ -24,7 +22,7 @@ export function jwtDecode(token) {
     return decoded;
   } catch (error) {
     console.error('Error decoding token:', error);
-    return null;
+    throw error;
   }
 }
 
@@ -39,8 +37,7 @@ export function isValidToken(accessToken) {
     const decoded = jwtDecode(accessToken);
 
     if (!decoded || !('exp' in decoded)) {
-      // If it's not a JWT, we assume it's valid if it exists (e.g. Sanctum token)
-      return !!accessToken;
+      return false;
     }
 
     const currentTime = Date.now() / 1000;
@@ -48,7 +45,7 @@ export function isValidToken(accessToken) {
     return decoded.exp > currentTime;
   } catch (error) {
     console.error('Error during token validation:', error);
-    return !!accessToken;
+    return false;
   }
 }
 
@@ -60,7 +57,7 @@ export function tokenExpired(exp) {
 
   setTimeout(() => {
     try {
-      toast.error('Token expired!', { id: 'token-expired' });
+      alert('Token expired!');
       sessionStorage.removeItem(STORAGE_KEY);
       window.location.href = paths.auth.jwt.signIn;
     } catch (error) {
@@ -79,10 +76,12 @@ export async function setSession(accessToken) {
 
       axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 
-      const decodedToken = jwtDecode(accessToken);
+      const decodedToken = jwtDecode(accessToken); // ~3 days by minimals server
 
       if (decodedToken && 'exp' in decodedToken) {
         tokenExpired(decodedToken.exp);
+      } else {
+        throw new Error('Invalid access token!');
       }
     } else {
       sessionStorage.removeItem(STORAGE_KEY);
